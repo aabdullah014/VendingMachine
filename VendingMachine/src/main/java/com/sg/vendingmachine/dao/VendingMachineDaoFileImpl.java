@@ -68,6 +68,7 @@ public class VendingMachineDaoFileImpl implements VendingMachineDao{
         
         Snack snack = null;
         
+        // method to equate "lays" and "Lays" for example
         for (Snack checkSnack: new ArrayList<Snack>(snackList.values())) {
             
             if (checkSnack.getName().toLowerCase().equals(name.toLowerCase())) {
@@ -106,6 +107,7 @@ public class VendingMachineDaoFileImpl implements VendingMachineDao{
     public Snack reduceInventory(Snack snack) throws 
             VendingMachinePersistenceException{
         
+        // reduce inventory when purchasing a snack
         this.loadRoster();
         snackList.remove(snack.getName());
         int inventory = snack.getInventory();

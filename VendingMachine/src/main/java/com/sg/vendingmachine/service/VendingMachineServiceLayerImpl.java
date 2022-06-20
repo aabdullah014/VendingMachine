@@ -12,6 +12,7 @@ import com.sg.vendingmachine.dto.Snack;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -30,8 +31,10 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
     private void validateSnackData(Snack snack) throws 
             VendingMachineDataValidationException{
         
+        // make sure user doesn't input invalid fields
         if (snack.getName() == null
                 || snack.getName().trim().length() == 0
+                || snack.getName().equals("")
                 || snack.getPrice() == null 
                 || snack.getPrice().compareTo(new BigDecimal("0")) == 0
                 || snack.getInventory() == 0) {
@@ -47,6 +50,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
             VendingMachineDuplicateNameException,
             VendingMachineDataValidationException{
         
+        // ensure snack doesn't already exist
         if (dao.getSnack(snack.getName()) != null) {
             
             throw new VendingMachineDuplicateNameException (
@@ -66,15 +70,15 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
     @Override
     public List<Snack> getAllSnacks() throws 
             VendingMachinePersistenceException{
+        
+        // list only the snacks in stock
         try {
             List<Snack> snackList = dao.getAllSnacks();
-            List<Snack> snacksInStock = new ArrayList<Snack>();
             
-            for (Snack snack: snackList) {
-                if (snack.getInventory() > 0) {
-                    snacksInStock.add(snack);
-                }
-            }
+            List<Snack> snacksInStock = snackList.stream()
+                                            .filter((s) -> s.getInventory() > 0)
+                                            .collect(Collectors.toList());
+            
             
             return snacksInStock;
         } catch (VendingMachinePersistenceException e) {
@@ -86,6 +90,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
     public Snack getSnack(String name, BigDecimal funds) throws
             VendingMachineInsufficientFundsException, 
             VendingMachinePersistenceException{
+        
         
         Snack snack;
         
@@ -129,6 +134,9 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
     
     public List<BigDecimal> returnChange(BigDecimal payment, BigDecimal price) {
         
+        // method to return change to a user
+        // first deduce how much change is necessary,
+        // then start with quarters and work your way down to pennies
         List<BigDecimal> numberOfCoins = new ArrayList<>();
         
         BigDecimal change = payment.subtract(price);
@@ -185,24 +193,21 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
     
     public boolean isAuthorizedUser(String password) {
         
+        // password for admin privileges
         return password.equals("verysafe");
         
     }
     
     public boolean enoughFunds(BigDecimal price, BigDecimal funds) {
         
-        return price.compareTo(funds) == -1;
-        
-    }
-    
-    public void returnInventoryToZero(Snack snack) {
-        
-        int inventory = snack.getInventory();
+        // see if user has enough money to buy the snack
+        return price.compareTo(funds) != 1;
         
     }
     
     public Snack reduceInventory(Snack snack) throws VendingMachinePersistenceException {
         
+        // reduce inventory of snack after purchasing
         snack = dao.reduceInventory(snack);
         
         return snack;

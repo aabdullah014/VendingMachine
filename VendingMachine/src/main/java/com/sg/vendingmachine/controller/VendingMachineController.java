@@ -25,6 +25,7 @@ import java.util.Scanner;
  */
 public class VendingMachineController {
     
+    // dependency injection
     private final VendingMachineView view;
     private final VendingMachineServiceLayerImpl serv;
 
@@ -42,14 +43,11 @@ public class VendingMachineController {
         
         boolean keepGoing = true;
         int menuSelection = 0;
-        BigDecimal userMoney = new BigDecimal("0");
         
         try {
             while (keepGoing) {
-                String name;
-                BigDecimal price;
-                int inventory;
-
+                
+                // display all snacks in stock in main menu
                 List<Snack> snackList = serv.getAllSnacks();
                 menuSelection = view.printMenuGetChoice(snackList);
 
@@ -96,6 +94,7 @@ public class VendingMachineController {
             
             try {
                 
+                // make sure user has admin privileges
                 String password = view.getAuthorizationKey();
                 boolean isAuthorized = serv.isAuthorizedUser(password);
                 
@@ -152,15 +151,18 @@ public class VendingMachineController {
         } else {
             
             try{
+                
                 BigDecimal price = snack.getPrice();
 
                 List<BigDecimal> numberOfCoins = new ArrayList<>();
 
+                // don't allow user to purchase snacks that are out of stock
                 if (snack.getInventory() < 1) {
                     throw new VendingMachineOutOfStockException(snack.getName() + " is currently out of stock!");
 
                 } else if (serv.enoughFunds(price, funds)) {
                     
+                    // if snack is in stock and user can pay, reduce inventory and return change
                     serv.reduceInventory(snack);
                     numberOfCoins = serv.returnChange(funds, price);
                     view.displaySnack(snack);
@@ -190,6 +192,7 @@ public class VendingMachineController {
             VendingMachinePersistenceException,
             VendingMachineOutOfStockException {
         
+        // only let users with admin privileges delete snacks
         String password = view.getAuthorizationKey();
         boolean isAuthorized = serv.isAuthorizedUser(password);
         

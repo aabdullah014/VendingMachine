@@ -10,6 +10,7 @@ package com.sg.vendingmachine.service;
  */
 public class VendingMachineOutOfStockException extends RuntimeException {
 
+    // return error if particular snack is out of stock
     public VendingMachineOutOfStockException(String message) {
         super(message);
     }
