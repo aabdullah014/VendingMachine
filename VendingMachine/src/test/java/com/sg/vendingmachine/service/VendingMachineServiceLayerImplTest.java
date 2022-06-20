@@ -122,6 +122,10 @@ public class VendingMachineServiceLayerImplTest {
         testSnack.setPrice(new BigDecimal("1.15"));
         testSnack.setInventory(1);
         
+        Snack testSnack2 = new Snack("Lays");
+        testSnack2.setPrice(new BigDecimal("1.50"));
+        testSnack2.setInventory(1);
+        
         // ACT & ASSERT
         Snack shouldBeMars = testService.getSnack("Mars", new BigDecimal("1.16"));
         assertNotNull("Getting Mars should not be null.", shouldBeMars);
@@ -129,6 +133,9 @@ public class VendingMachineServiceLayerImplTest {
         
         Snack shouldBeNull = testService.getSnack("KitKat", new BigDecimal("1.12"));
         assertNull("Getting KitKat should be null", shouldBeNull);
+        
+        Snack shouldBeNull2 = testService.getSnack("Lays", new BigDecimal("1.12"));
+        assertNull("Getting Lays should be null", shouldBeNull2);
         
     }
     
