@@ -55,21 +55,18 @@ public class VendingMachineController {
 
                 switch (menuSelection) {
                     case 1:
-                        this.getAllSnacks();
-                        break;
-                    case 2:
                         this.addSnack();
 
                         break;
-                    case 3:
+                    case 2:
                         this.getSnack();
 
                         break;
-                    case 4:
+                    case 3:
                         this.removeSnack();
 
                         break;
-                    case 5:
+                    case 4:
                         keepGoing = false;
                     default:
                         io.print("UNKNOWN COMMAND");
@@ -88,7 +85,9 @@ public class VendingMachineController {
     }
     
     
-    public void addSnack() throws VendingMachinePersistenceException {
+    public void addSnack() throws 
+            VendingMachinePersistenceException,
+            VendingMachineOutOfStockException{
         view.displayCreateSnackBanner();
         
         boolean hasErrors = false;
@@ -123,7 +122,9 @@ public class VendingMachineController {
         
     }
     
-    public void getAllSnacks() throws VendingMachinePersistenceException {
+    public void getAllSnacks() throws 
+            VendingMachinePersistenceException,
+            VendingMachineOutOfStockException {
         
         view.displayAllSnackBanner();
         List<Snack> snackList = serv.getAllSnacks();
@@ -142,24 +143,52 @@ public class VendingMachineController {
         BigDecimal funds = view.getInputFunds();
         
         Snack snack = serv.getSnack(name, funds);
-        BigDecimal price = snack.getPrice();
         
-        List<BigDecimal> numberOfCoins = new ArrayList<>();
-        
-        if (funds.compareTo(snack.getPrice()) == 1) {
-        
-            numberOfCoins = serv.returnChange(funds, price);
-        
+        if (snack == null) {
+            
+            view.displayError("Could not find " + name + ", please try again.");
+            return null;
+            
+        } else {
+            
+            try{
+                BigDecimal price = snack.getPrice();
+
+                List<BigDecimal> numberOfCoins = new ArrayList<>();
+
+                if (snack.getInventory() < 1) {
+                    throw new VendingMachineOutOfStockException(snack.getName() + " is currently out of stock!");
+
+                } else if (serv.enoughFunds(price, funds)) {
+                    
+                    serv.reduceInventory(snack);
+                    numberOfCoins = serv.returnChange(funds, price);
+                    view.displaySnack(snack);
+
+                    view.returnChangeInfo(numberOfCoins, price, funds);
+
+
+                } else if (!serv.enoughFunds(price, funds)) {
+
+                    view.displayError("Insufficient Funds! " + snack.getName() + " costs " + snack.getPrice().toString() + ". You paid with $" + funds.toString() + ".");
+                    return null;
+
+                } else if (snack.getInventory() < 1) {
+
+                    view.displayError(snack.getName() + " is currently out of stock!");
+
+                }
+            } catch (VendingMachineOutOfStockException e) {
+                view.displayError(snack.getName() + " is currently out of stock!");
+            }
         }
-        
-        view.displaySnack(snack);
-        
-        view.returnChangeInfo(numberOfCoins, price, funds);
-        
         return snack;
+        
     }
     
-    public void removeSnack() throws VendingMachinePersistenceException {
+    public void removeSnack() throws 
+            VendingMachinePersistenceException,
+            VendingMachineOutOfStockException {
         
         String password = view.getAuthorizationKey();
         boolean isAuthorized = serv.isAuthorizedUser(password);

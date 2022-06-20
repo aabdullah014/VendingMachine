@@ -124,11 +124,11 @@ public class VendingMachineServiceLayerImplTest {
         
         // ACT & ASSERT
         Snack shouldBeMars = testService.getSnack("Mars", new BigDecimal("1.16"));
-        assertNotNull("Getting 001 should not be null.", shouldBeMars);
-        assertEquals("Snack stored under 001 should be Mars.", testSnack, shouldBeMars);
+        assertNotNull("Getting Mars should not be null.", shouldBeMars);
+        assertEquals("Snack stored under Mars should be Mars.", testSnack, shouldBeMars);
         
         Snack shouldBeNull = testService.getSnack("KitKat", new BigDecimal("1.12"));
-        assertNull("Getting 0042 should be null", shouldBeNull);
+        assertNull("Getting KitKat should be null", shouldBeNull);
         
     }
     

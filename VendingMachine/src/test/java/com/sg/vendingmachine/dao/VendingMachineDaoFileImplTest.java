@@ -46,8 +46,6 @@ public class VendingMachineDaoFileImplTest {
         
         // Get the snack from the DAO
         Snack fetchDaoSnack = testDao.getSnack(snack.getName());
-        int inventory = fetchDaoSnack.getInventory();
-        fetchDaoSnack.setInventory(inventory+1);
         
         // Check if the data is equal
         assertEquals("Checking Snack name", snack.getName(), fetchDaoSnack.getName());

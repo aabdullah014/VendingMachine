@@ -27,7 +27,8 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         this.auditDao = auditDao;
     }
     
-    private void validateSnackData(Snack snack) throws VendingMachineDataValidationException {
+    private void validateSnackData(Snack snack) throws 
+            VendingMachineDataValidationException{
         
         if (snack.getName() == null
                 || snack.getName().trim().length() == 0
@@ -63,7 +64,8 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
     }
 
     @Override
-    public List<Snack> getAllSnacks() throws VendingMachinePersistenceException {
+    public List<Snack> getAllSnacks() throws 
+            VendingMachinePersistenceException{
         try {
             List<Snack> snackList = dao.getAllSnacks();
             List<Snack> snacksInStock = new ArrayList<Snack>();
@@ -83,44 +85,30 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
     @Override
     public Snack getSnack(String name, BigDecimal funds) throws
             VendingMachineInsufficientFundsException, 
-            VendingMachineOutOfStockException,
             VendingMachinePersistenceException{
         
         Snack snack;
         
         try {
+            
             snack = dao.getSnack(name);
             
             if (snack == null) {
             
-            return null;
+                return null;
             
             }
+            
         } catch (VendingMachinePersistenceException e) {
             throw new VendingMachinePersistenceException("Failed to get snack.");
-        }
-        BigDecimal price = snack.getPrice();
-        List<Integer> numberOfCoins;
-        
-        if (snack == null) {
-            
-            return null;
-            
-        } else if (funds.compareTo(snack.getPrice()) == -1) {
-            
-            throw new VendingMachineInsufficientFundsException(name + " costs " + snack.getPrice().toString() + ". You paid with $" + funds.toString() + ".");
-            
-        } else if (snack.getInventory() < 0) {
-            
-            throw new VendingMachineOutOfStockException(name + " is currently out of stock!");
-            
         }
         
         return snack;
     }
 
     @Override
-    public Snack removeSnack(String name) throws VendingMachinePersistenceException {
+    public Snack removeSnack(String name) throws 
+            VendingMachinePersistenceException{
         
         Snack removedSnack = dao.removeSnack(name);
         
@@ -161,17 +149,17 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         
         while(changeLeft.compareTo(zero) != 0){
             
-            if (changeLeft.compareTo(quarter) == 1) {
+            if (changeLeft.compareTo(quarter) != -1) {
                 
                 numQuarters = numQuarters.add(new BigDecimal("1"));
                 changeLeft = changeLeft.subtract(quarter);
                 
-            } else if (changeLeft.compareTo(dime) == 1) {
+            } else if (changeLeft.compareTo(dime) != -1) {
                 
                 numDimes = numDimes.add(new BigDecimal("1"));
                 changeLeft = changeLeft.subtract(dime);
                 
-            } else if (changeLeft.compareTo(nickel) == 1) {
+            } else if (changeLeft.compareTo(nickel) != -1) {
                 
                 numNickels = numNickels.add(new BigDecimal("1"));
                 changeLeft = changeLeft.subtract(nickel);
@@ -201,4 +189,23 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         
     }
     
+    public boolean enoughFunds(BigDecimal price, BigDecimal funds) {
+        
+        return price.compareTo(funds) == -1;
+        
+    }
+    
+    public void returnInventoryToZero(Snack snack) {
+        
+        int inventory = snack.getInventory();
+        
+    }
+    
+    public Snack reduceInventory(Snack snack) throws VendingMachinePersistenceException {
+        
+        snack = dao.reduceInventory(snack);
+        
+        return snack;
+        
+    }
 }

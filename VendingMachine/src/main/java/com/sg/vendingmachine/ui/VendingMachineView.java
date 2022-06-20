@@ -22,11 +22,13 @@ public class VendingMachineView {
     
     
     public int printMenuGetChoice(List<Snack> snackList){
+        this.delineater();
         this.displaySnacks(snackList);
-        io.print("2. Create a New Snack [ADMIN ONLY]");
-        io.print("3. Purchase a Snack");
-        io.print("4. Remove a Snack [ADMIN ONLY]");
-        io.print("5. Exit");
+        this.delineater();
+        io.print("1. Create a New Snack [ADMIN ONLY]");
+        io.print("2. Purchase a Snack");
+        io.print("3. Remove a Snack [ADMIN ONLY]");
+        io.print("4. Exit");
             
         return io.readInt("Please Select from the numbers above.", 1, 5);
     }
@@ -128,7 +130,7 @@ public class VendingMachineView {
     }
     
     public void displayError(String error){
-        io.print("**********************ERRROR************************");
+        io.print("**********************ERROR************************");
         io.print(error);
     }
     
@@ -137,6 +139,12 @@ public class VendingMachineView {
         String password = io.readString("Please input admin password");
         
         return password;
+        
+    }
+    
+    public void delineater() {
+        
+        io.print("------------------------------------------------");
         
     }
     

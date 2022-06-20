@@ -5,6 +5,7 @@
 package com.sg.vendingmachine.dao;
 
 import com.sg.vendingmachine.dto.Snack;
+import com.sg.vendingmachine.service.VendingMachineOutOfStockException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -41,7 +42,8 @@ public class VendingMachineDaoFileImpl implements VendingMachineDao{
     public static final String DELIMETER = " :: ";
     
     @Override
-    public Snack addSnack(String name, Snack snack) throws VendingMachinePersistenceException {
+    public Snack addSnack(String name, Snack snack) throws 
+            VendingMachinePersistenceException{
         
         this.loadRoster();
         Snack newSnack = snackList.put(name, snack);
@@ -66,33 +68,54 @@ public class VendingMachineDaoFileImpl implements VendingMachineDao{
         
         Snack snack = null;
         
-        if (snackList.get(name) == null) {
-            return null;
-        }
-        
         for (Snack checkSnack: new ArrayList<Snack>(snackList.values())) {
             
             if (checkSnack.getName().toLowerCase().equals(name.toLowerCase())) {
                 snack = checkSnack;
             }
         }
-        int inventory = snack.getInventory();
-        snack.setInventory(inventory-1);
-        
-        this.writeRoster();
         
         return snack;
    
     }
 
     @Override
-    public Snack removeSnack(String name) throws VendingMachinePersistenceException {
+    public Snack removeSnack(String name) throws 
+            VendingMachinePersistenceException{
         
         this.loadRoster();
-        Snack removedSnack = snackList.remove(name);
+        
+        Snack removedSnack = null;
+        
+        for (Snack checkSnack: new ArrayList<Snack>(snackList.values())) {
+            
+            if (checkSnack.getName().toLowerCase().equals(name.toLowerCase())) {
+                removedSnack = checkSnack;
+                
+            }
+        }
+        
+        removedSnack = snackList.remove(removedSnack.getName());
         this.writeRoster();
         
         return removedSnack;
+        
+    }
+    
+    @Override
+    public Snack reduceInventory(Snack snack) throws 
+            VendingMachinePersistenceException{
+        
+        this.loadRoster();
+        snackList.remove(snack.getName());
+        int inventory = snack.getInventory();
+        
+        snack.setInventory(inventory-1);
+        snackList.put(snack.getName(), snack);
+        
+        this.writeRoster();
+        
+        return snack;
         
     }
     
@@ -110,7 +133,7 @@ public class VendingMachineDaoFileImpl implements VendingMachineDao{
         return snack;
     }
     
-    private String marshallSnack(Snack snack) {
+    private String marshallSnack(Snack snack) throws VendingMachineOutOfStockException {
         String snackAsText = snack.getName() + DELIMETER;
         
         snackAsText += snack.getPrice().toString() + DELIMETER 
@@ -119,7 +142,9 @@ public class VendingMachineDaoFileImpl implements VendingMachineDao{
         return snackAsText;
     }
     
-    private void writeRoster() throws VendingMachinePersistenceException {
+    private void writeRoster() throws 
+            VendingMachinePersistenceException,
+            VendingMachineOutOfStockException {
         PrintWriter out;
         
         try{

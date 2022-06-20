@@ -20,13 +20,14 @@ public interface VendingMachineServiceLayer {
             VendingMachineDuplicateNameException,
             VendingMachineDataValidationException;
  
-    List<Snack> getAllSnacks() throws VendingMachinePersistenceException;
- 
-    Snack getSnack(String name, BigDecimal funds) throws 
-            VendingMachineInsufficientFundsException, 
-            VendingMachineOutOfStockException,
+    List<Snack> getAllSnacks() throws 
             VendingMachinePersistenceException;
  
-    Snack removeSnack(String name) throws VendingMachinePersistenceException;
+    Snack getSnack(String name, BigDecimal funds) throws 
+            VendingMachineInsufficientFundsException,
+            VendingMachinePersistenceException;
+ 
+    Snack removeSnack(String name) throws 
+            VendingMachinePersistenceException;
     
 }

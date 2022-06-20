@@ -4,6 +4,7 @@
  */
 package com.sg.vendingmachine.dto;
 
+import com.sg.vendingmachine.service.VendingMachineOutOfStockException;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -37,7 +38,7 @@ public class Snack {
         this.price = price;
     }
 
-    public int getInventory() {
+    public int getInventory() throws VendingMachineOutOfStockException {
         return inventory;
     }
 

@@ -81,4 +81,17 @@ public class VendingMachineDaoStubImpl implements VendingMachineDao{
         }
     }
     
+    @Override
+    public Snack reduceInventory(Snack snack) throws 
+            VendingMachinePersistenceException, 
+            VendingMachineOutOfStockException {
+        
+        int inventory = snack.getInventory();
+        
+        snack.setInventory(inventory-1);
+        
+        
+        return snack;
+    }
+    
 }

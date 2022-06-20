@@ -5,6 +5,7 @@
 package com.sg.vendingmachine.dao;
 
 import com.sg.vendingmachine.dto.Snack;
+import com.sg.vendingmachine.service.VendingMachineOutOfStockException;
 import java.util.List;
 
 /**
@@ -13,12 +14,17 @@ import java.util.List;
  */
 public interface VendingMachineDao {
     
-    Snack addSnack(String name, Snack snack) throws VendingMachinePersistenceException;
+    Snack addSnack(String name, Snack snack) throws 
+            VendingMachinePersistenceException;
     
     List<Snack> getAllSnacks() throws VendingMachinePersistenceException;
     
     Snack getSnack(String name) throws VendingMachinePersistenceException;
     
-    Snack removeSnack(String name) throws VendingMachinePersistenceException;
+    Snack removeSnack(String name) throws 
+            VendingMachinePersistenceException;
+    
+    Snack reduceInventory(Snack snack) throws 
+            VendingMachinePersistenceException ;
     
 }

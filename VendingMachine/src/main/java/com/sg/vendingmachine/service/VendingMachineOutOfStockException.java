@@ -8,7 +8,7 @@ package com.sg.vendingmachine.service;
  *
  * @author abdulrahman
  */
-public class VendingMachineOutOfStockException extends Exception {
+public class VendingMachineOutOfStockException extends RuntimeException {
 
     public VendingMachineOutOfStockException(String message) {
         super(message);
