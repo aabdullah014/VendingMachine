@@ -97,9 +97,20 @@ public class VendingMachineController {
             
             try {
                 
-                Snack snack = view.getNewSnackInfo();
-        
-                serv.addSnack(snack);
+                String password = view.getAuthorizationKey();
+                boolean isAuthorized = serv.isAuthorizedUser(password);
+                
+                if (isAuthorized) {
+                    Snack snack = view.getNewSnackInfo();
+
+                    serv.addSnack(snack);
+                    
+                    view.displayCreateSuccessBanner();
+                } else {
+                    
+                    view.displayError("UNAUTHORIZED!");
+                    
+                }
                 
             } catch (VendingMachineDuplicateNameException | VendingMachineDataValidationException e) {
                 
@@ -109,8 +120,6 @@ public class VendingMachineController {
             }
             
         } while (hasErrors);
-        
-        view.displayCreateSuccessBanner();
         
     }
     
@@ -152,11 +161,20 @@ public class VendingMachineController {
     
     public void removeSnack() throws VendingMachinePersistenceException {
         
-        view.removeSnackBanner();
-        String name = view.getSnackChoice();
-        Snack removedSnack = serv.removeSnack(name);
+        String password = view.getAuthorizationKey();
+        boolean isAuthorized = serv.isAuthorizedUser(password);
         
-        view.removeSnack(removedSnack);
+        if (isAuthorized) {
+            view.removeSnackBanner();
+            String name = view.getSnackChoice();
+            Snack removedSnack = serv.removeSnack(name);
+        
+            view.removeSnack(removedSnack);
+        } else {
+                    
+            view.displayError("UNAUTHORIZED!");
+                    
+        }
         
     }
     

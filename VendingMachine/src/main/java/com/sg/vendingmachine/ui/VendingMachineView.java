@@ -132,9 +132,11 @@ public class VendingMachineView {
         io.print(error);
     }
     
-    public void getAuthorizationKey(String entry) {
+    public String getAuthorizationKey() {
         
-        io.readString("Please input admin password");
+        String password = io.readString("Please input admin password");
+        
+        return password;
         
     }
     

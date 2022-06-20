@@ -195,4 +195,10 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         return numberOfCoins;
     }
     
+    public boolean isAuthorizedUser(String password) {
+        
+        return password.equals("verysafe");
+        
+    }
+    
 }
