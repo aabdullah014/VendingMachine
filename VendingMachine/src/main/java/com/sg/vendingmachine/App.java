@@ -13,6 +13,7 @@ import com.sg.vendingmachine.service.VendingMachineServiceLayerImpl;
 import com.sg.vendingmachine.ui.UserIO;
 import com.sg.vendingmachine.ui.UserIOConsoleImpl;
 import com.sg.vendingmachine.ui.VendingMachineView;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  *
@@ -22,16 +23,11 @@ public class App {
     
     public static void main(String[] args) {
         
-        UserIO io = new UserIOConsoleImpl();
-        VendingMachineView view = new VendingMachineView(io);
-        
-        VendingMachineDaoFileImpl dao = new VendingMachineDaoFileImpl();
-        VendingMachineAuditDao auditDao = new VendingMachineAuditDaoFileImpl();
-        
-        VendingMachineServiceLayerImpl serv = new VendingMachineServiceLayerImpl(dao, auditDao);
-        
-        VendingMachineController controller = new VendingMachineController(view, serv);
-        
+        AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext();
+        appContext.scan("com.sg.booktracker");
+        appContext.refresh();
+
+        VendingMachineController controller = appContext.getBean("bookController", VendingMachineController.class);
         controller.run();
         
     }

@@ -11,33 +11,32 @@ import com.sg.vendingmachine.service.VendingMachineDuplicateNameException;
 import com.sg.vendingmachine.service.VendingMachineInsufficientFundsException;
 import com.sg.vendingmachine.service.VendingMachineOutOfStockException;
 import com.sg.vendingmachine.service.VendingMachineServiceLayerImpl;
-import com.sg.vendingmachine.ui.UserIO;
-import com.sg.vendingmachine.ui.UserIOConsoleImpl;
 import com.sg.vendingmachine.ui.VendingMachineView;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author abdulrahman
  */
+
+@Component
 public class VendingMachineController {
     
     // dependency injection
     private final VendingMachineView view;
     private final VendingMachineServiceLayerImpl serv;
 
+    @Autowired
     public VendingMachineController(VendingMachineView view, VendingMachineServiceLayerImpl serv) {
         this.view = view;
         this.serv = serv;
     }
     
     
-    
-    private Scanner scanner;
-    private UserIO io  = new UserIOConsoleImpl();
     
     public void run() {
         
@@ -67,7 +66,7 @@ public class VendingMachineController {
                     case 4:
                         keepGoing = false;
                     default:
-                        io.print("UNKNOWN COMMAND");
+                        this.unknownSnack();
 
                 }   
 
@@ -208,6 +207,11 @@ public class VendingMachineController {
                     
         }
         
+    }
+    
+    public void unknownSnack() throws
+            VendingMachinePersistenceException {
+        view.displayUnknownCommandBanner();
     }
     
 }

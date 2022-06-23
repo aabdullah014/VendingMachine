@@ -6,11 +6,13 @@ package com.sg.vendingmachine.service;
 
 import com.sg.vendingmachine.dao.VendingMachineAuditDao;
 import com.sg.vendingmachine.dao.VendingMachinePersistenceException;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author abdulrahman
  */
+@Component
 public class VendingMachineAuditDaoStubImpl implements VendingMachineAuditDao {
     
     @Override

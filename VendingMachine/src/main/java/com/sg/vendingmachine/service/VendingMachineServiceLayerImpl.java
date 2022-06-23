@@ -13,16 +13,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author abdulrahman
  */
+@Component
 public class VendingMachineServiceLayerImpl implements VendingMachineServiceLayer{
 
     private VendingMachineDao dao;
     private VendingMachineAuditDao auditDao;
 
+    @Autowired
     public VendingMachineServiceLayerImpl(VendingMachineDao dao, VendingMachineAuditDao auditDao) {
         this.dao = dao;
         this.auditDao = auditDao;

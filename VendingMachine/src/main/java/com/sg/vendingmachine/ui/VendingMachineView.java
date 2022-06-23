@@ -7,15 +7,20 @@ package com.sg.vendingmachine.ui;
 import com.sg.vendingmachine.dto.Snack;
 import java.math.BigDecimal;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author abdulrahman
  */
+
+@Component
 public class VendingMachineView {
     
     private final UserIO io;
 
+    @Autowired
     public VendingMachineView(UserIO io) {
         this.io = io;
     }

@@ -10,11 +10,13 @@ import com.sg.vendingmachine.dto.Snack;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author abdulrahman
  */
+@Component
 public class VendingMachineDaoStubImpl implements VendingMachineDao{
     
     public Snack onlySnack;

@@ -18,11 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author abdulrahman
  */
+@Component
 public class VendingMachineDaoFileImpl implements VendingMachineDao{
 
     public VendingMachineDaoFileImpl() {
@@ -94,6 +96,10 @@ public class VendingMachineDaoFileImpl implements VendingMachineDao{
                 removedSnack = checkSnack;
                 
             }
+        }
+        
+        if (removedSnack == null) {
+            return null;
         }
         
         removedSnack = snackList.remove(removedSnack.getName());
