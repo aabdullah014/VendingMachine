@@ -4,6 +4,8 @@
  */
 package com.sg.vendingmachine.service;
 
+import com.sg.vendingmachine.dao.VendingMachineDaoStubImpl;
+import com.sg.vendingmachine.dao.VendingMachineAuditDaoStubImpl;
 import com.sg.vendingmachine.dao.VendingMachineAuditDao;
 import com.sg.vendingmachine.dao.VendingMachineDao;
 import com.sg.vendingmachine.dao.VendingMachinePersistenceException;
@@ -148,7 +150,7 @@ public class VendingMachineServiceLayerImplTest {
         
         // ACT
         Snack shouldBeMars = testService.getSnack("Mars", new BigDecimal("1.15"));
-        assertNotNull("Should be Ada", shouldBeMars);
+        assertNotNull("Should be Mars", shouldBeMars);
         assertEquals("Should be a clone", shouldBeMars, testSnack);
         
         Snack shouldBeNull = testService.removeSnack("0042");

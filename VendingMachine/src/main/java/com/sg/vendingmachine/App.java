@@ -6,13 +6,6 @@
 package com.sg.vendingmachine;
 
 import com.sg.vendingmachine.controller.VendingMachineController;
-import com.sg.vendingmachine.dao.VendingMachineAuditDao;
-import com.sg.vendingmachine.dao.VendingMachineAuditDaoFileImpl;
-import com.sg.vendingmachine.dao.VendingMachineDaoFileImpl;
-import com.sg.vendingmachine.service.VendingMachineServiceLayerImpl;
-import com.sg.vendingmachine.ui.UserIO;
-import com.sg.vendingmachine.ui.UserIOConsoleImpl;
-import com.sg.vendingmachine.ui.VendingMachineView;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -24,10 +17,10 @@ public class App {
     public static void main(String[] args) {
         
         AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext();
-        appContext.scan("com.sg.booktracker");
+        appContext.scan("com.sg.vendingmachine");
         appContext.refresh();
 
-        VendingMachineController controller = appContext.getBean("bookController", VendingMachineController.class);
+        VendingMachineController controller = appContext.getBean("vendingMachineController", VendingMachineController.class);
         controller.run();
         
     }

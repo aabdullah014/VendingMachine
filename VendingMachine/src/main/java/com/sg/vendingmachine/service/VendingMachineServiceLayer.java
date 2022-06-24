@@ -30,4 +30,17 @@ public interface VendingMachineServiceLayer {
     Snack removeSnack(String name) throws 
             VendingMachinePersistenceException;
     
+    List<BigDecimal> returnChange(BigDecimal payment, BigDecimal price);
+    
+    boolean isAuthorizedUser(String password);
+    
+    boolean enoughFunds(BigDecimal price, BigDecimal funds) throws 
+            VendingMachineInsufficientFundsException;
+    
+    boolean inStock(Snack snack) throws 
+            VendingMachineOutOfStockException;
+    
+    Snack reduceInventory(Snack snack) throws 
+            VendingMachinePersistenceException;
+    
 }

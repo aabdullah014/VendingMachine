@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
  *
  * @author abdulrahman
  */
+
 @Component
 public class VendingMachineAuditDaoFileImpl implements VendingMachineAuditDao {
 

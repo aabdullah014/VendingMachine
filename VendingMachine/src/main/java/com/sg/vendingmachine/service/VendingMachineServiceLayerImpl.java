@@ -96,7 +96,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
             VendingMachinePersistenceException{
         
         
-        Snack snack;
+        Snack snack = null;
         
         try {
             
@@ -108,9 +108,18 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
             
             }
             
+            this.enoughFunds(snack.getPrice(), funds);
+            this.inStock(snack);
+            
         } catch (VendingMachinePersistenceException e) {
             throw new VendingMachinePersistenceException("Failed to get snack.");
+        } catch (VendingMachineInsufficientFundsException e) {
+            throw new VendingMachineInsufficientFundsException("Insufficient funds! This costs " + snack.getPrice().toString() 
+                + " and you paid with $" + funds.toString() + ".");
+        } catch (VendingMachineOutOfStockException e) {
+            throw new VendingMachineOutOfStockException(snack.getName() + " is currently out of stock!");
         }
+        
         
         return snack;
     }
@@ -136,6 +145,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         
     }
     
+    @Override
     public List<BigDecimal> returnChange(BigDecimal payment, BigDecimal price) {
         
         // method to return change to a user
@@ -195,6 +205,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         return numberOfCoins;
     }
     
+    @Override
     public boolean isAuthorizedUser(String password) {
         
         // password for admin privileges
@@ -202,13 +213,29 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         
     }
     
-    public boolean enoughFunds(BigDecimal price, BigDecimal funds) {
+    @Override
+    public boolean enoughFunds(BigDecimal price, BigDecimal funds) throws VendingMachineInsufficientFundsException{
         
         // see if user has enough money to buy the snack
-        return price.compareTo(funds) != 1;
+        if (price.compareTo(funds) != 1) {
+            return true;
+        } else {
+            throw new VendingMachineInsufficientFundsException("Insufficient funds! This costs " + price.toString() 
+                + " and you paid with $" + funds.toString() + ".");
+        }
         
     }
     
+    @Override
+    public boolean inStock(Snack snack) throws VendingMachineOutOfStockException {
+        if(snack.getInventory() < 1) {
+            throw new VendingMachineOutOfStockException(snack.getName() + " is currently out of stock!");
+        }
+        
+        return true;
+    }
+    
+    @Override
     public Snack reduceInventory(Snack snack) throws VendingMachinePersistenceException {
         
         // reduce inventory of snack after purchasing

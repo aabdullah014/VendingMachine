@@ -10,7 +10,7 @@ import com.sg.vendingmachine.service.VendingMachineDataValidationException;
 import com.sg.vendingmachine.service.VendingMachineDuplicateNameException;
 import com.sg.vendingmachine.service.VendingMachineInsufficientFundsException;
 import com.sg.vendingmachine.service.VendingMachineOutOfStockException;
-import com.sg.vendingmachine.service.VendingMachineServiceLayerImpl;
+import com.sg.vendingmachine.service.VendingMachineServiceLayer;
 import com.sg.vendingmachine.ui.VendingMachineView;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,10 +28,10 @@ public class VendingMachineController {
     
     // dependency injection
     private final VendingMachineView view;
-    private final VendingMachineServiceLayerImpl serv;
+    private final VendingMachineServiceLayer serv;
 
     @Autowired
-    public VendingMachineController(VendingMachineView view, VendingMachineServiceLayerImpl serv) {
+    public VendingMachineController(VendingMachineView view, VendingMachineServiceLayer serv) {
         this.view = view;
         this.serv = serv;
     }
@@ -95,6 +95,7 @@ public class VendingMachineController {
                 
                 // make sure user has admin privileges
                 String password = view.getAuthorizationKey();
+                
                 boolean isAuthorized = serv.isAuthorizedUser(password);
                 
                 if (isAuthorized) {
@@ -156,31 +157,24 @@ public class VendingMachineController {
                 List<BigDecimal> numberOfCoins = new ArrayList<>();
 
                 // don't allow user to purchase snacks that are out of stock
-                if (snack.getInventory() < 1) {
-                    throw new VendingMachineOutOfStockException(snack.getName() + " is currently out of stock!");
+                boolean inStock = serv.inStock(snack);
+                boolean enoughFunds = serv.enoughFunds(price, funds);
 
-                } else if (serv.enoughFunds(price, funds)) {
+                if (enoughFunds && inStock) {
                     
                     // if snack is in stock and user can pay, reduce inventory and return change
-                    serv.reduceInventory(snack);
                     numberOfCoins = serv.returnChange(funds, price);
+                    serv.reduceInventory(snack);
                     view.displaySnack(snack);
 
                     view.returnChangeInfo(numberOfCoins, price, funds);
 
-
-                } else if (!serv.enoughFunds(price, funds)) {
-
-                    view.displayError("Insufficient Funds! " + snack.getName() + " costs " + snack.getPrice().toString() + ". You paid with $" + funds.toString() + ".");
-                    return null;
-
-                } else if (snack.getInventory() < 1) {
-
-                    view.displayError(snack.getName() + " is currently out of stock!");
-
                 }
-            } catch (VendingMachineOutOfStockException e) {
-                view.displayError(snack.getName() + " is currently out of stock!");
+                
+            } catch (VendingMachineOutOfStockException | VendingMachineInsufficientFundsException e) {
+                
+                view.displayError(e.getMessage());
+                
             }
         }
         return snack;
